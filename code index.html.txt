@@ -1,0 +1,396 @@
+import React, { useMemo, useState } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { cn } from "@/lib/utils";
+import {
+  Palette,
+  Ruler,
+  Sofa,
+  Lamp,
+  Building2,
+  House,
+  Mountain,
+  Mail,
+  Phone,
+  MapPin,
+  Instagram,
+  Facebook,
+  Linkedin,
+  Search,
+  SunMedium,
+  MoonStar,
+  ChevronRight,
+} from "lucide-react";
+
+// --- Helper data ---
+const PROJECTS = [
+  {
+    id: 1,
+    title: "Minimalist Living Room",
+    type: "Residential",
+    tags: ["living", "minimal", "soft tones"],
+    img: "https://images.unsplash.com/photo-1505692794403-34d4982f88aa?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    id: 2,
+    title: "Warm Studio Apartment",
+    type: "Residential",
+    tags: ["studio", "warm", "compact"],
+    img: "https://images.unsplash.com/photo-1505691723518-36a5ac3b2a59?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    id: 3,
+    title: "Modern Office Lounge",
+    type: "Commercial",
+    tags: ["office", "lounge", "modern"],
+    img: "https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    id: 4,
+    title: "Sunlit Dining Corner",
+    type: "Residential",
+    tags: ["dining", "sunlit", "cozy"],
+    img: "https://images.unsplash.com/photo-1493666438817-866a91353ca9?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    id: 5,
+    title: "Boutique Retail Nook",
+    type: "Commercial",
+    tags: ["retail", "textures", "accent walls"],
+    img: "https://images.unsplash.com/photo-1449247613801-ab06418e2861?q=80&w=1600&auto=format&fit=crop",
+  },
+  {
+    id: 6,
+    title: "Calm Bedroom Suite",
+    type: "Residential",
+    tags: ["bedroom", "calm", "neutrals"],
+    img: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?q=80&w=1600&auto=format&fit=crop",
+  },
+];
+
+const SERVICES = [
+  {
+    icon: Palette,
+    title: "Concept & Styling",
+    desc: "Mood boards, material palettes, and a cohesive narrative for your space.",
+  },
+  {
+    icon: Ruler,
+    title: "Planning & 3D Renders",
+    desc: "Layout optimization, technical drawings, and photorealistic visualizations.",
+  },
+  {
+    icon: Sofa,
+    title: "Furniture & Decor Sourcing",
+    desc: "Custom furniture, soft furnishings, artwork, and accessories curated for you.",
+  },
+  {
+    icon: Lamp,
+    title: "Lighting Design",
+    desc: "Layered lighting plans that balance ambience, task, and accent.",
+  },
+  {
+    icon: Building2,
+    title: "Commercial Fit-outs",
+    desc: "Efficient, brand-led spaces for offices, cafes, retail and hospitality.",
+  },
+  {
+    icon: House,
+    title: "Residential Makeovers",
+    desc: "End-to-end renovations that turn houses into homes.",
+  },
+];
+
+export default function InteriorDesignSite() {
+  const [dark, setDark] = useState(false);
+  const [brand, setBrand] = useState("M.K.S Interior Designing");
+  const [query, setQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState("All");
+
+  const filteredProjects = useMemo(() => {
+    return PROJECTS.filter((p) => {
+      const matchQuery = `${p.title} ${p.type} ${p.tags.join(" ")}`
+        .toLowerCase()
+        .includes(query.toLowerCase());
+      const matchType = typeFilter === "All" || p.type === typeFilter;
+      return matchQuery && matchType;
+    });
+  }, [query, typeFilter]);
+
+  return (
+    <div className={cn("min-h-screen transition-colors", dark ? "bg-neutral-950 text-neutral-100" : "bg-white text-neutral-900")}>      
+      {/* NAVBAR */}
+      <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-neutral-200/60 dark:border-neutral-800/60">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Mountain className="h-6 w-6" />
+            <span className="font-semibold text-lg hidden sm:inline">{brand}</span>
+          </div>
+          <nav className="hidden md:flex items-center gap-6 text-sm">
+            <a href="#home" className="hover:opacity-80">Home</a>
+            <a href="#services" className="hover:opacity-80">Services</a>
+            <a href="#projects" className="hover:opacity-80">Projects</a>
+            <a href="#about" className="hover:opacity-80">About</a>
+            <a href="#contact" className="hover:opacity-80">Contact</a>
+          </nav>
+          <div className="flex items-center gap-2">
+            <select
+              className="hidden sm:block border border-neutral-200 dark:border-neutral-800 rounded-xl px-3 py-1.5 bg-transparent"
+              value={brand}
+              onChange={(e) => setBrand(e.target.value)}
+              aria-label="Change brand name"
+            >
+              <option value="M.K.S Interior Designing">M.K.S Interior Designing</option>
+              <option value="Manish Kumar Sharma Interiors">Manish Kumar Sharma Interiors</option>
+            </select>
+            <Button variant="ghost" size="icon" onClick={() => setDark((d) => !d)} aria-label="Toggle theme">
+              {dark ? <SunMedium className="h-5 w-5" /> : <MoonStar className="h-5 w-5" />}
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* HERO */}
+      <section id="home" className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <img
+            src="https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?q=80&w=2400&auto=format&fit=crop"
+            alt="Elegant interior background"
+            className="w-full h-full object-cover opacity-70"
+          />
+          <div className={cn("absolute inset-0", dark ? "bg-neutral-950/60" : "bg-white/40")} />
+        </div>
+        <div className="max-w-7xl mx-auto px-4 py-28 md:py-36">
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-6xl font-bold leading-tight"
+          >
+            Crafted Spaces, Calm Minds.
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+            className="mt-4 max-w-2xl text-base md:text-lg opacity-90"
+          >
+            We create timeless interiors across homes and commercial spaces—balancing function, light, and elegant detail.
+          </motion.p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button asChild>
+              <a href="#projects" className="inline-flex items-center">View Projects <ChevronRight className="ml-1 h-4 w-4"/></a>
+            </Button>
+            <Button asChild variant="outline">
+              <a href="#contact">Get a Free Consultation</a>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* SERVICES */}
+      <section id="services" className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <div className="flex items-end justify-between gap-4">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-semibold">Services</h2>
+            <p className="mt-2 text-neutral-600 dark:text-neutral-400 max-w-2xl">
+              From first sketch to final styling — we handle the full journey with craftsmanship and care.
+            </p>
+          </div>
+        </div>
+        <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {SERVICES.map((s, i) => (
+            <Card key={s.title} className="rounded-2xl shadow-sm">
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <s.icon className="h-6 w-6" />
+                  <CardTitle className="text-lg">{s.title}</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm opacity-90">{s.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </section>
+
+      {/* PROJECTS */}
+      <section id="projects" className="bg-neutral-50 dark:bg-neutral-900/40 border-y border-neutral-200/60 dark:border-neutral-800/60">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-semibold">Selected Projects</h2>
+              <p className="mt-2 text-neutral-600 dark:text-neutral-400 max-w-2xl">
+                A snapshot of our residential and commercial work.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 opacity-60" />
+                <Input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search projects, tags…"
+                  className="pl-9 rounded-2xl"
+                />
+              </div>
+              <select
+                value={typeFilter}
+                onChange={(e) => setTypeFilter(e.target.value)}
+                className="border border-neutral-200 dark:border-neutral-800 rounded-2xl px-3"
+              >
+                <option>All</option>
+                <option>Residential</option>
+                <option>Commercial</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredProjects.map((p) => (
+              <Card key={p.id} className="group overflow-hidden rounded-2xl border-0 shadow-md">
+                <div className="aspect-[4/3] overflow-hidden">
+                  <img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                </div>
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium">{p.title}</h3>
+                    <Badge variant="secondary" className="rounded-full">{p.type}</Badge>
+                  </div>
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {p.tags.map((t) => (
+                      <Badge key={t} variant="outline" className="rounded-full">{t}</Badge>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ABOUT */}
+      <section id="about" className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+        <div className="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h2 className="text-3xl md:text-4xl font-semibold">About Us</h2>
+            <p className="mt-4 opacity-90">
+              {brand} is a boutique interior studio crafting refined, human-centered spaces. We blend practical planning with thoughtful materiality—wood, stone, fabrics, and light—to create interiors that feel calm and effortless.
+            </p>
+            <p className="mt-3 opacity-90">
+              Based in India, we take on select residential and commercial projects across the country. Our promise: clear communication, transparent timelines, and designs that age gracefully.
+            </p>
+            <div className="mt-6 flex items-center gap-3">
+              <Button asChild>
+                <a href="#contact">Start Your Project</a>
+              </Button>
+              <Button asChild variant="outline">
+                <a href="#projects">See More Work</a>
+              </Button>
+            </div>
+          </div>
+          <div className="overflow-hidden rounded-2xl shadow-lg">
+            <img
+              src="https://images.unsplash.com/photo-1501183638710-841dd1904471?q=80&w=2000&auto=format&fit=crop"
+              alt="Studio mood board"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="contact" className="bg-neutral-50 dark:bg-neutral-900/40 border-y border-neutral-200/60 dark:border-neutral-800/60">
+        <div className="max-w-7xl mx-auto px-4 py-16 md:py-24">
+          <h2 className="text-3xl md:text-4xl font-semibold">Let's Talk</h2>
+          <p className="mt-2 text-neutral-600 dark:text-neutral-400 max-w-2xl">
+            Tell us about your space. We'll get back within 1–2 business days with next steps.
+          </p>
+          <div className="mt-8 grid md:grid-cols-2 gap-8">
+            <Card className="rounded-2xl">
+              <CardContent className="pt-6 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Input placeholder="Full name" className="rounded-xl" />
+                  <Input placeholder="Email" type="email" className="rounded-xl" />
+                </div>
+                <Input placeholder="Phone" type="tel" className="rounded-xl" />
+                <Input placeholder="City" className="rounded-xl" />
+                <select className="border border-neutral-200 dark:border-neutral-800 rounded-xl px-3 py-2 w-full">
+                  <option>Project Type</option>
+                  <option>Residential</option>
+                  <option>Commercial</option>
+                </select>
+                <Textarea placeholder="Tell us about your project, style, and timeline…" className="rounded-xl min-h-[120px]" />
+                <Button className="w-full">Send Enquiry</Button>
+              </CardContent>
+            </Card>
+            <div className="space-y-6">
+              <Card className="rounded-2xl">
+                <CardHeader>
+                  <CardTitle>Studio</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm opacity-90">
+                  <p className="flex items-center gap-2"><MapPin className="h-4 w-4"/> Jaipur, Rajasthan, India</p>
+                  <p className="flex items-center gap-2"><Mail className="h-4 w-4"/> hello@mks-interiors.example</p>
+                  <p className="flex items-center gap-2"><Phone className="h-4 w-4"/> +91 98XXXXXX00</p>
+                </CardContent>
+              </Card>
+              <Card className="rounded-2xl">
+                <CardHeader>
+                  <CardTitle>Follow</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex gap-3">
+                    <Button variant="outline" size="icon" className="rounded-full"><Instagram className="h-5 w-5"/></Button>
+                    <Button variant="outline" size="icon" className="rounded-full"><Facebook className="h-5 w-5"/></Button>
+                    <Button variant="outline" size="icon" className="rounded-full"><Linkedin className="h-5 w-5"/></Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+      <footer className="max-w-7xl mx-auto px-4 py-10 text-sm">
+        <div className="grid md:grid-cols-4 gap-8">
+          <div>
+            <div className="flex items-center gap-2">
+              <Mountain className="h-5 w-5"/>
+              <span className="font-semibold">{brand}</span>
+            </div>
+            <p className="mt-3 opacity-80">Designing interiors that feel like home — everywhere.</p>
+          </div>
+          <div>
+            <p className="font-medium mb-3">Company</p>
+            <ul className="space-y-2 opacity-90">
+              <li><a href="#about" className="hover:opacity-70">About</a></li>
+              <li><a href="#services" className="hover:opacity-70">Services</a></li>
+              <li><a href="#projects" className="hover:opacity-70">Work</a></li>
+            </ul>
+          </div>
+          <div>
+            <p className="font-medium mb-3">Resources</p>
+            <ul className="space-y-2 opacity-90">
+              <li><a href="#contact" className="hover:opacity-70">Contact</a></li>
+              <li><a href="#" className="hover:opacity-70">Style Guide</a></li>
+              <li><a href="#" className="hover:opacity-70">Privacy</a></li>
+            </ul>
+          </div>
+          <div className="md:text-right">
+            <p className="opacity-80">© {new Date().getFullYear()} {brand}. All rights reserved.</p>
+          </div>
+        </div>
+        <Separator className="my-6" />
+        <p className="text-xs opacity-70">* Image credits: Unsplash placeholders for demo.</p>
+      </footer>
+    </div>
+  );
+}
